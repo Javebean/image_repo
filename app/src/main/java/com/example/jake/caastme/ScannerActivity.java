@@ -149,8 +149,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 e.printStackTrace();
             }
 
-            
-
 
         }
     }
