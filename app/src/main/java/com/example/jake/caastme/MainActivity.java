@@ -7,6 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity{
 
     RecyclerView mRecyclerView;
@@ -23,8 +27,15 @@ public class MainActivity extends AppCompatActivity{
 //        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));//这里用线性宫格显示 类似于grid view
 //        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));//这里用线性宫格显示 类似于瀑布流
 
-          mRecyclerView.setAdapter(new NormalRecyclerViewAdapter(this));
+         // mRecyclerView.setAdapter(new NormalRecyclerViewAdapter(this));
+        //换成daimaijia的adapter
+        String[] mTitles = this.getResources().getStringArray(R.array.titles);
+        ArrayList<String> array = new ArrayList<>();
+        for(String str:mTitles){
+            array.add(str);
+        }
 
+        mRecyclerView.setAdapter(new RecyclerViewAdapter(this, array));
 
 
 

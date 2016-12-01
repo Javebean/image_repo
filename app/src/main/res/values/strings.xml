@@ -17,4 +17,8 @@
 
     <string name="app_name">caastme</string>
     <string name="action_settings">Settings</string>
+    <string name="swipe_delete">删除</string>
+    <string name="swipe_top">置顶</string>
+
+
 </resources>
