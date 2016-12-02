@@ -29,6 +29,8 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             textViewPos = (TextView) itemView.findViewById(R.id.position);
             textViewData = (TextView) itemView.findViewById(R.id.text_data);
+            deleteTextView = (TextView) itemView.findViewById(R.id.deleteTextView);
+            topTextView = (TextView) itemView.findViewById(R.id.topTextView);
 
         }
     }
@@ -106,26 +108,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 tempLayout = layout;
                 tempLayoutIndex = position;
             }
-
-
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-                super.onStartOpen(layout);
-                Log.i("sdfs","start："+position);
-            }
-        });
-
-        //双击监听
-        viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
-            @Override
-            public void onDoubleClick(SwipeLayout layout, boolean surface) {
-               //viewHolder.swipeLayout.postDelayed()
-                Log.i("obj_address",layout.toString());
-                Log.i("obj_address",viewHolder.swipeLayout.toString());
-
-
-                Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
-            }
         });
 
         //单击监听
@@ -149,11 +131,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.swipeLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.i("setSwipeEnabled","："+motionEvent.getAction());
+                //Log.i("setSwipeEnabled","："+view);
+
 
                     if(MotionEvent.ACTION_DOWN==motionEvent.getAction()){
                         if(tempLayout!=null){
                             tempLayout.close();
+                            //Log.i("setSwipeEnabled","："+false+view.getId());
                             viewHolder.swipeLayout.setSwipeEnabled(false);
                             //layout.setSwipeEnabled(false);
                             tempLayout = null;
@@ -171,8 +155,11 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             }
         });
 
-        //绑定swipeLayout里面的button
-        /*viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+
+
+
+        //绑定swipeLayout里面的delete
+        viewHolder.deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -180,14 +167,16 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 mItemManger.removeShownLayouts(viewHolder.swipeLayout);
                 mDataset.remove(position);
 
+                //还有把这个临时保存上次开的那个Layout置为null,因为它已经呗删掉了
+                tempLayout = null;
                 //这个比较重要;要通知recyclerView，哪一项被移除了，他好去设置新的下标 -1
-                 * 仅调用notifyItemRemoved的话,删除会出很多问题,比如:点击删除position = 1的Item,
+                 /* 仅调用notifyItemRemoved的话,删除会出很多问题,比如:点击删除position = 1的Item,
                  * 实际删除的是下一个,所以我们需要这么做,加上notifyItemRangeChanged这个方法,更新一下列表:
                  *
                  * 先remove,再notifyItemRemoved， 最后再notifyItemRangeChanged
                  remove：把数据从list中remove掉，
                  notifyItemRemoved：显示动画效果
-                 notifyItemRangeChanged：对于被删掉的位置及其后range大小范围内的view进行重新onBindViewHolder
+                 notifyItemRangeChanged：对于被删掉的位置及其后range大小范围内的view进行重新onBindViewHolder*/
 
 
                 notifyItemRemoved(position);
@@ -195,7 +184,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 mItemManger.closeAllItems();
                 Toast.makeText(view.getContext(), "Deleted " + viewHolder.textViewData.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
 
        /* viewHolder.swipeLayout.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
