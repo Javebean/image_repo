@@ -4,27 +4,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:layout_margin="8dp"
-    card_view:cardCornerRadius="4dp">
+    card_view:cardCornerRadius="0dp"
+    ><!--card_view:cardCornerRadius="0dp" >0 会莫名奇妙增加padding -->
 
     <com.daimajia.swipe.SwipeLayout xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         swipe:leftEdgeSwipeOffset="0dp"
-        swipe:rightEdgeSwipeOffset="0dp">
+        swipe:rightEdgeSwipeOffset="0dp"><!--leftEdgeSwipeOffset:如果能左滑，滑动到离右边 多少dp ,-->
+                                        <!--rightEdgeSwipeOffset:如果能右滑，滑动到离左边 多少dp ,-->
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="match_parent"
-            android:background="#FF5534"
             android:gravity="center"
             android:tag="Bottom3"
             android:weightSum="10">
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/top"
+                android:gravity="center"
                 android:layout_weight="5"
                 android:text="@string/swipe_top"
                 android:textColor="#fff"
@@ -33,20 +35,22 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="5"
+                android:gravity="center"
+                android:background="@color/delete"
                 android:text="@string/swipe_delete"
                 android:textColor="#fff"
                 android:textSize="17sp" />
 
         </LinearLayout>
 
+            <!--android:background="@android:color/white"-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            android:elevation="5dp"
-            android:padding="10dp">
+            android:padding="0dp"><!--android:elevation="5dp" 设置立体高度的-->
 
             <TextView
                 android:id="@+id/position"

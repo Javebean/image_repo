@@ -18,6 +18,8 @@ import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import java.util.ArrayList;
 
+import static android.R.string.no;
+
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
@@ -89,6 +91,10 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
        比如说你刚开始的时候创建了几个ViewHolder的实例。那是recyclerVIew中开头几个展示的实例。这几个实例
        还有去表示你滑动到最后几个的每一项，你在oncreate中绑定的话，就永远是那前几个有绑定监听，后面就没有了！
      */
+
+    private SwipeLayout tempLayout;//记住上次打开的那个swipeLayout
+    private int tempLayoutIndex;//记住上次打开的那个swipeLayout position
+
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
         Log.i("loadssss","bind#####"+position);
@@ -97,7 +103,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
         //因为每一项中都是一个swipelayout,所以每一项都要设置showMode.。不然是他的默认模式
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-
+       // viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left,viewHolder.swipeLayout.getChildAt(0));
         viewHolder.textViewPos.setText((position + 1) + ".");
         viewHolder.textViewData.setText(item);
 
@@ -107,7 +113,19 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             @Override
             public void onOpen(SwipeLayout layout) {
                // YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+
+                //有的时候，滑的太快不算点击事件，导致无法关闭，这里增加滑动也要关闭
+                if(tempLayout!=null && position!=tempLayoutIndex){
+                    tempLayout.close();
+                    Log.i("sdfs","open关闭："+position);
+                }
+
+                tempLayout = layout;
+                tempLayoutIndex = position;
             }
+
+
+
         });
 
         //双击监听
@@ -118,17 +136,35 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 Log.i("obj_address",layout.toString());
                 Log.i("obj_address",viewHolder.swipeLayout.toString());
 
-                viewHolder.swipeLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewHolder.swipeLayout.close();
-                          closeAllExcept(viewHolder.swipeLayout);
-                    }
-                }, 50);
 
                 Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
         });
+
+        //单击监听
+        viewHolder.swipeLayout.setOnClickListener(new SwipeLayout.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                if(tempLayout!=null){
+                    tempLayout.close();
+                    tempLayout = null;
+                    Log.i("sdfs","关闭："+position);
+
+
+                }
+            /*viewHolder.swipeLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                  // Log.i("sdfs","nativee"+mItemManger.getOpenItems().size());
+                }
+            }, 50);*/
+            }
+        });
+
+        //单击关闭 swipeLayout 这个只能关闭自己的。我想不管点击哪个item都能关闭
+       //viewHolder.swipeLayout.setClickToClose(true);
+
 
         //绑定swipeLayout里面的button
         /*viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
