@@ -4,21 +4,17 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import java.util.ArrayList;
-
-import static android.R.string.no;
 
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
@@ -33,14 +29,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             textViewPos = (TextView) itemView.findViewById(R.id.position);
             textViewData = (TextView) itemView.findViewById(R.id.text_data);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(getClass().getSimpleName(), "onItemSelected: " + textViewData.getText().toString());
-                    Toast.makeText(view.getContext(), "onItemSelected: " + textViewData.getText().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
 
         }
     }
@@ -115,19 +103,16 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             @Override
             public void onOpen(SwipeLayout layout) {
                // YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
-
-                //有的时候，滑的太快不算点击事件，导致无法关闭，这里增加滑动也要关闭
-                if(tempLayout!=null && position!=tempLayoutIndex){
-                    tempLayout.close();
-                    Log.i("sdfs","open关闭："+position);
-                }
-
                 tempLayout = layout;
                 tempLayoutIndex = position;
             }
 
 
-
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+                super.onStartOpen(layout);
+                Log.i("sdfs","start："+position);
+            }
         });
 
         //双击监听
@@ -148,13 +133,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
             @Override
             public void onClick(View view) {
-                if(tempLayout!=null){
-                    tempLayout.close();
-                    tempLayout = null;
-                    Log.i("sdfs","关闭："+position);
-
-
-                }
             /*viewHolder.swipeLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -167,6 +145,31 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         //单击关闭 swipeLayout 这个只能关闭自己的。我想不管点击哪个item都能关闭
        //viewHolder.swipeLayout.setClickToClose(true);
 
+
+        viewHolder.swipeLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.i("setSwipeEnabled","："+motionEvent.getAction());
+
+                    if(MotionEvent.ACTION_DOWN==motionEvent.getAction()){
+                        if(tempLayout!=null){
+                            tempLayout.close();
+                            viewHolder.swipeLayout.setSwipeEnabled(false);
+                            //layout.setSwipeEnabled(false);
+                            tempLayout = null;
+                        }
+                        //这里折磨了好久。原来是要up和cancel
+                        //cancel是手指往上下滑
+                    }else if(MotionEvent.ACTION_UP ==motionEvent.getAction() || MotionEvent.ACTION_CANCEL ==motionEvent.getAction()){
+                        if(tempLayout==null){
+                          viewHolder.swipeLayout.setSwipeEnabled(true);
+                        }
+                    }
+
+
+                return false;
+            }
+        });
 
         //绑定swipeLayout里面的button
         /*viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
