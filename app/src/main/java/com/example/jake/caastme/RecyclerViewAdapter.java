@@ -26,7 +26,8 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         SwipeLayout swipeLayout;
         TextView textViewPos;
         TextView textViewData;
-
+        TextView deleteTextView;
+        TextView topTextView;
         public SimpleViewHolder(View itemView) {
             super(itemView);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
