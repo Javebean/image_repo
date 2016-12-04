@@ -51,8 +51,8 @@ public class DBManager {
      * delete old person
      * @param shareEntity
      */
-    public void deleteOldPerson(ShareEntity shareEntity) {
-        db.delete("share_entity", "age >= ?", new String[]{String.valueOf(shareEntity.getTitle())});
+    public void deleteShareById(ShareEntity shareEntity) {
+        db.delete("share_entity", "_id = ?", new String[]{String.valueOf(shareEntity.get_id())});
     }
 
     /**

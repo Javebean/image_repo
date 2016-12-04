@@ -14,7 +14,7 @@ import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
@@ -36,16 +36,16 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     }
 
     private Context mContext;
-    private ArrayList<String> mDataset;
+    private List<ShareEntity> shareEntities;
 
     //protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
 
 
 
     //Adapter的构造函数。初始化一些数据
-    public RecyclerViewAdapter(Context context, ArrayList<String> objects) {
+    public RecyclerViewAdapter(Context context,  List<ShareEntity> shareEntities) {
         this.mContext = context;
-        this.mDataset = objects;
+        this.shareEntities = shareEntities;
     }
 
 
@@ -89,13 +89,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
-        String item = mDataset.get(position);
+        ShareEntity item = shareEntities.get(position);
 
         //因为每一项中都是一个swipelayout,所以每一项都要设置showMode.。不然是他的默认模式
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
        // viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left,viewHolder.swipeLayout.getChildAt(0));
-        viewHolder.textViewPos.setText((position + 1) + ".");
-        viewHolder.textViewData.setText(item);
+        viewHolder.textViewPos.setText(item.get_id() + ".");
+        viewHolder.textViewData.setText(item.getTitle());
 
 
         //滑动监听
@@ -163,7 +163,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
                 //mItemManger:父类中的。用户移除当前的swipeLayout
                 mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                mDataset.remove(position);
+                shareEntities.remove(position);
 
                 //还有把这个临时保存上次开的那个Layout置为null,因为它已经呗删掉了
                 tempLayout = null;
@@ -178,7 +178,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
 
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, mDataset.size());
+                notifyItemRangeChanged(position, shareEntities.size());
                 mItemManger.closeAllItems();
                 Toast.makeText(view.getContext(), "Deleted " + viewHolder.textViewData.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
@@ -200,7 +200,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     //告知adapter有多少项
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return shareEntities.size();
     }
 
 

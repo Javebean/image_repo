@@ -13,7 +13,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity{
 
     RecyclerView mRecyclerView;
-
+    DBManager dbManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +28,10 @@ public class MainActivity extends AppCompatActivity{
          // mRecyclerView.setAdapter(new NormalRecyclerViewAdapter(this));
         //换成daimaijia的adapter
         ArrayList<String> array = new ArrayList<>();
-        DBManager dbManager = new DBManager(this);
+        dbManager = new DBManager(this);
         List<ShareEntity> list = dbManager.query();
-        for(ShareEntity se : list){
-            array.add(se.getTitle());
 
-        }
-
-        mRecyclerView.setAdapter(new RecyclerViewAdapter(this, array));
+        mRecyclerView.setAdapter(new RecyclerViewAdapter(this, list));
 
 
 
@@ -72,5 +68,14 @@ public class MainActivity extends AppCompatActivity{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //应用的最后一个Activity关闭时应释放DB
+        dbManager.closeDB();
     }
 }

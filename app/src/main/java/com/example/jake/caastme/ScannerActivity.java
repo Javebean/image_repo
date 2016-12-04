@@ -185,6 +185,12 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //应用的最后一个Activity关闭时应释放DB
+        dbManager.closeDB();
+    }
 
 
 }
