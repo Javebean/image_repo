@@ -60,18 +60,19 @@ public class DBManager {
      * @return List<Person>
      */
     public List<ShareEntity> query() {
-        ArrayList<ShareEntity> persons = new ArrayList<ShareEntity>();
+        ArrayList<ShareEntity> arrayList = new ArrayList<ShareEntity>();
         Cursor c = queryTheCursor();
+        ShareEntity entity ;
         while (c.moveToNext()) {
-           /* Person person = new Person();
-            person._id = c.getInt(c.getColumnIndex("_id"));
-            person.name = c.getString(c.getColumnIndex("name"));
-            person.age = c.getInt(c.getColumnIndex("age"));
-            person.info = c.getString(c.getColumnIndex("info"));
-            persons.add(person);*/
+            entity = new ShareEntity();
+            entity.setFavicon(c.getString(c.getColumnIndex("favicon")));
+            entity.setTitle(c.getString(c.getColumnIndex("title")));
+            entity.setUrl(c.getString(c.getColumnIndex("url")));
+
+            arrayList.add(entity);
         }
         c.close();
-        return persons;
+        return arrayList;
     }
 
     /**

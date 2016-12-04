@@ -26,7 +26,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private ZXingScannerView mScannerView;
 
-    String url;
+    String server_url;
     //分享的地址
     String redirect_url;
 
@@ -42,7 +42,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
 
         //服务器的地址
-         url = Constants.getProperty("url",this.getApplicationContext());
+        server_url = Constants.getProperty("url",this.getApplicationContext());
          QrScanner();
 
     }
@@ -74,17 +74,17 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         // Do something with the result here
 
 
-        try {
-            redirect_url = URLEncoder.encode(redirect_url,"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        if(redirect_url!=null && !redirect_url.isEmpty()){
+                try {
+                    redirect_url = URLEncoder.encode(redirect_url,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
 
 
-        String code =  rawResult.getText();
-        Log.i("caastinfo1", code); // Prints scan results
-        final String url_address = url+"redirect?code="+code+"&redirect_url="+redirect_url;
-        if(url!=null && !url.isEmpty()){
+                String code =  rawResult.getText();
+                Log.i("caastinfo1", code); // Prints scan results
+                final String url_address = server_url+"redirect?code="+code+"&redirect_url="+redirect_url;
 
                 // 开启新的线程
                 new Thread(){
@@ -124,25 +124,32 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         String action = intent.getAction();
         String type = intent.getType();
 
-        String url = null;
+        String share_url = null;
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
 
-                //得到分享的标题
-                String sharedSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
                 //得到分享的内容（里面包含网址）
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
 
-                ShareEntity shareEntity = new ShareEntity();
-                shareEntity.setFavicon(null);
-                shareEntity.setTitle(sharedSubject);
-                shareEntity.setUrl(sharedText.substring(sharedText.indexOf("http")));
-                dbManager.add(shareEntity);
+                if(sharedText!=null && !sharedText.isEmpty()){
+                    //得到分享的标题
+                    String sharedSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                    Log.i("shared_info","分享的标题："+sharedSubject);
+
+                    share_url = sharedText.substring(sharedText.indexOf("http"));
+                    Log.i("shared_info","分享的内容："+sharedText);
+                    ShareEntity shareEntity = new ShareEntity();
+                    shareEntity.setFavicon(null);
+                    shareEntity.setTitle(sharedSubject==null?share_url:sharedSubject);
+                    shareEntity.setUrl(share_url);
+                    dbManager.add(shareEntity);
+
+                }
 
             }
         }
 
-        return url;
+        return share_url;
     }
 
 

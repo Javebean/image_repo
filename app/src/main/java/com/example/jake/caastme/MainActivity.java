@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -26,10 +27,12 @@ public class MainActivity extends AppCompatActivity{
 
          // mRecyclerView.setAdapter(new NormalRecyclerViewAdapter(this));
         //换成daimaijia的adapter
-        String[] mTitles = this.getResources().getStringArray(R.array.titles);
         ArrayList<String> array = new ArrayList<>();
-        for(String str:mTitles){
-            array.add(str);
+        DBManager dbManager = new DBManager(this);
+        List<ShareEntity> list = dbManager.query();
+        for(ShareEntity se : list){
+            array.add(se.getTitle());
+
         }
 
         mRecyclerView.setAdapter(new RecyclerViewAdapter(this, array));
