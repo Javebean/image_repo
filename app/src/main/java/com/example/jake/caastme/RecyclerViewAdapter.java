@@ -89,8 +89,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
-        Log.i("loadssss","bind#####"+position);
-
         String item = mDataset.get(position);
 
         //因为每一项中都是一个swipelayout,所以每一项都要设置showMode.。不然是他的默认模式

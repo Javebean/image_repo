@@ -27,12 +27,21 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     private ZXingScannerView mScannerView;
 
     String url;
+    //分享的地址
+    String redirect_url;
 
+    DBManager dbManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.test);
 
+        dbManager = new DBManager(this);
+
+        redirect_url = handleShare();
+
+
+        //服务器的地址
          url = Constants.getProperty("url",this.getApplicationContext());
          QrScanner();
 
@@ -49,6 +58,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
+
         }
     }
 
@@ -63,7 +73,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     public void handleResult(Result rawResult) {
         // Do something with the result here
 
-        String redirect_url = handleShare();
+
         try {
             redirect_url = URLEncoder.encode(redirect_url,"UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -117,13 +127,17 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         String url = null;
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
+
+                //得到分享的标题
+                String sharedSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                //得到分享的内容（里面包含网址）
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                if (sharedText != null) {
-                    Log.i("caastinfo","text:"+sharedText);
-                    // Update UI to reflect text being shared
-                    //extract url
-                    url = sharedText.substring(sharedText.indexOf("http"));
-                }
+
+                ShareEntity shareEntity = new ShareEntity();
+                shareEntity.setFavicon(null);
+                shareEntity.setTitle(sharedSubject);
+                shareEntity.setUrl(sharedText.substring(sharedText.indexOf("http")));
+                dbManager.add(shareEntity);
 
             }
         }
