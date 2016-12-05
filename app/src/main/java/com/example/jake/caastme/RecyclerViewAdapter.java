@@ -17,8 +17,6 @@ import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import java.util.List;
 
-import static android.R.attr.value;
-
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
@@ -113,13 +111,19 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             }
         });
 
+
         //单击监听
         viewHolder.swipeLayout.setOnClickListener(new SwipeLayout.OnClickListener(){
 
             @Override
             public void onClick(View view) {
+                //确保 没有打开的状态才能点击
+                if(tempLayout==null){
+
                 Intent myIntent = new Intent(mContext, ScannerActivity.class);
                 mContext.startActivity(myIntent);
+
+                }
 
 
 
@@ -139,7 +143,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.swipeLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                //Log.i("setSwipeEnabled","："+view);
+                Log.i("setSwipeEnabled","："+motionEvent.getAction());
 
 
                     if(MotionEvent.ACTION_DOWN==motionEvent.getAction()){
@@ -156,6 +160,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                         if(tempLayout==null){
                           viewHolder.swipeLayout.setSwipeEnabled(true);
                         }
+
                     }
 
 
