@@ -1,6 +1,7 @@
 package com.example.jake.caastme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import java.util.List;
+
+import static android.R.attr.value;
 
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
@@ -37,15 +40,17 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     private Context mContext;
     private List<ShareEntity> shareEntities;
+    private DBManager dbManager;
 
     //protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
 
 
 
     //Adapter的构造函数。初始化一些数据
-    public RecyclerViewAdapter(Context context,  List<ShareEntity> shareEntities) {
+    public RecyclerViewAdapter(Context context,  List<ShareEntity> shareEntities, DBManager dbManager) {
         this.mContext = context;
         this.shareEntities = shareEntities;
+        this.dbManager = dbManager;
     }
 
 
@@ -89,7 +94,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
-        ShareEntity item = shareEntities.get(position);
+        final ShareEntity item = shareEntities.get(position);
 
         //因为每一项中都是一个swipelayout,所以每一项都要设置showMode.。不然是他的默认模式
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
@@ -113,6 +118,11 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
             @Override
             public void onClick(View view) {
+                Intent myIntent = new Intent(mContext, ScannerActivity.class);
+                mContext.startActivity(myIntent);
+
+
+
             /*viewHolder.swipeLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -164,6 +174,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 //mItemManger:父类中的。用户移除当前的swipeLayout
                 mItemManger.removeShownLayouts(viewHolder.swipeLayout);
                 shareEntities.remove(position);
+                dbManager.deleteShareById(item);
 
                 //还有把这个临时保存上次开的那个Layout置为null,因为它已经呗删掉了
                 tempLayout = null;

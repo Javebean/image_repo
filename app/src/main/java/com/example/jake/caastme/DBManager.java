@@ -65,6 +65,7 @@ public class DBManager {
         ShareEntity entity ;
         while (c.moveToNext()) {
             entity = new ShareEntity();
+            entity.set_id(c.getInt(c.getColumnIndex("_id")));
             entity.setFavicon(c.getString(c.getColumnIndex("favicon")));
             entity.setTitle(c.getString(c.getColumnIndex("title")));
             entity.setUrl(c.getString(c.getColumnIndex("url")));

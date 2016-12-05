@@ -36,10 +36,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.test);
 
+        //init dbmanager
         dbManager = new DBManager(this);
-
+        //get shared url
         redirect_url = handleShare();
-
 
         //服务器的地址
         server_url = Constants.getProperty("url",this.getApplicationContext());

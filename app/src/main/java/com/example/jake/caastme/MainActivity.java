@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity{
         dbManager = new DBManager(this);
         List<ShareEntity> list = dbManager.query();
 
-        mRecyclerView.setAdapter(new RecyclerViewAdapter(this, list));
+        mRecyclerView.setAdapter(new RecyclerViewAdapter(this, list,dbManager));
 
 
 
