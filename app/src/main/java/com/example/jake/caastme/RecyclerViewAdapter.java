@@ -90,6 +90,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     private SwipeLayout tempLayout;//记住上次打开的那个swipeLayout
     private int tempLayoutIndex;//记住上次打开的那个swipeLayout position
 
+
+    //表示状态
+    private final static int OPEN_STATE = 0;
+    private final static int CLOSE_STATE = 1;
+    private final static int MOVING_STATE = 3;
+    private static int cur_state;
+
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
         final ShareEntity item = shareEntities.get(position);
@@ -108,6 +115,25 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                // YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
                 tempLayout = layout;
                 tempLayoutIndex = position;
+                cur_state = OPEN_STATE;
+            }
+
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+                super.onStartOpen(layout);
+                cur_state = MOVING_STATE;
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+                super.onStartClose(layout);
+                cur_state = MOVING_STATE;
+            }
+
+            @Override
+            public void onClose(SwipeLayout layout) {
+                super.onClose(layout);
+                cur_state = CLOSE_STATE;
             }
         });
 
@@ -118,10 +144,9 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             @Override
             public void onClick(View view) {
                 //确保 没有打开的状态才能点击
-                if(tempLayout==null){
-
-                Intent myIntent = new Intent(mContext, ScannerActivity.class);
-                mContext.startActivity(myIntent);
+                if(cur_state==CLOSE_STATE){
+                    Intent myIntent = new Intent(mContext, ScannerActivity.class);
+                    mContext.startActivity(myIntent);
 
                 }
 
@@ -147,17 +172,17 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
 
                     if(MotionEvent.ACTION_DOWN==motionEvent.getAction()){
-                        if(tempLayout!=null){
+                        if(cur_state==OPEN_STATE){
                             tempLayout.close();
                             //Log.i("setSwipeEnabled","："+false+view.getId());
                             viewHolder.swipeLayout.setSwipeEnabled(false);
                             //layout.setSwipeEnabled(false);
-                            tempLayout = null;
+                            cur_state = CLOSE_STATE;
                         }
                         //这里折磨了好久。原来是要up和cancel
                         //cancel是手指往上下滑
                     }else if(MotionEvent.ACTION_UP ==motionEvent.getAction() || MotionEvent.ACTION_CANCEL ==motionEvent.getAction()){
-                        if(tempLayout==null){
+                        if(cur_state==CLOSE_STATE){
                           viewHolder.swipeLayout.setSwipeEnabled(true);
                         }
 
