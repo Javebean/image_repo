@@ -95,7 +95,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     private final static int OPEN_STATE = 0;
     private final static int CLOSE_STATE = 1;
     private final static int MOVING_STATE = 3;
-    private static int cur_state;
+    private static int cur_state = CLOSE_STATE;
 
     @Override
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
@@ -168,7 +168,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.swipeLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.i("setSwipeEnabled","："+motionEvent.getAction());
+                Log.i("setSwipeEnabled","："+motionEvent.getAction()+"  cur_state："+cur_state);
 
 
                     if(MotionEvent.ACTION_DOWN==motionEvent.getAction()){
@@ -177,12 +177,12 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                             //Log.i("setSwipeEnabled","："+false+view.getId());
                             viewHolder.swipeLayout.setSwipeEnabled(false);
                             //layout.setSwipeEnabled(false);
-                            cur_state = CLOSE_STATE;
+                            //cur_state = CLOSE_STATE;
                         }
                         //这里折磨了好久。原来是要up和cancel
                         //cancel是手指往上下滑
                     }else if(MotionEvent.ACTION_UP ==motionEvent.getAction() || MotionEvent.ACTION_CANCEL ==motionEvent.getAction()){
-                        if(cur_state==CLOSE_STATE){
+                        if(cur_state==MOVING_STATE){
                           viewHolder.swipeLayout.setSwipeEnabled(true);
                         }
 
