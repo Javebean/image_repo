@@ -97,6 +97,7 @@ public class NetUtil {
             }
 
         } catch (Exception e) {
+            Log.i(TAG, "访问异常："+e);
             e.printStackTrace();
         } finally {
 

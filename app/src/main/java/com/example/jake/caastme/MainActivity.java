@@ -4,9 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +38,23 @@ public class MainActivity extends AppCompatActivity{
         List<ShareEntity> list = dbManager.query();
 
         mRecyclerView.setAdapter(new RecyclerViewAdapter(this, list,dbManager));
+
+
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    Document doc = null;
+                    try {
+
+                        //compile 'org.jsoup:jsoup:1.10.1'
+                         doc = Jsoup.connect("https://www.baidu.com/").get();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("xxxxxxxxxxd",doc==null?"null":doc.toString());
+                }
+            }.start();
 
 
 

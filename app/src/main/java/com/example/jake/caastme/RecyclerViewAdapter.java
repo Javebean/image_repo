@@ -146,6 +146,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 //确保 没有打开的状态才能点击
                 if(cur_state==CLOSE_STATE){
                     Intent myIntent = new Intent(mContext, ScannerActivity.class);
+                    myIntent.putExtra("redirect_url", item.getUrl()); //Optional parameters
                     mContext.startActivity(myIntent);
 
                 }

@@ -125,6 +125,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         String type = intent.getType();
 
         String share_url = null;
+         //判断他是否是分享过来的。不是的话，就是点击item列表过来的
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
 
@@ -147,6 +148,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 }
 
             }
+        }else{
+            share_url = intent.getStringExtra("redirect_url"); //if it's a string you stored.
         }
 
         return share_url;
