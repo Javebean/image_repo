@@ -90,8 +90,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
      */
 
     private SwipeLayout tempLayout;//记住上次打开的那个swipeLayout
-    private int tempLayoutIndex;//记住上次打开的那个swipeLayout position
-
 
     //表示状态
     private final static int OPEN_STATE = 0;
@@ -120,7 +118,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             public void onOpen(SwipeLayout layout) {
                // YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
                 tempLayout = layout;
-                tempLayoutIndex = position;
                 cur_state = OPEN_STATE;
             }
 

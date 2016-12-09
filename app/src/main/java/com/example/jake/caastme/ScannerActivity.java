@@ -106,7 +106,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                     }
                 }
 
-                ;
             }.start();
 
         }
@@ -150,7 +149,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         URI uri = new URI(share_url);
                         String domain = uri.getHost();
                         //这个是zzd 就是uc浏览器的早知道，
-                        if(domain.indexOf("uc")>=0 || domain.indexOf("zzd")>=0){
+                        if(domain.contains("uc") || domain.contains("zzd")){
                            //uc_favicon
                             favicon = Constants.getProperty("uc_favicon",this.getApplicationContext());
                         }else{
@@ -192,7 +191,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
             // 更新UI
             super.handleMessage(msg);
             Log.i("caastinfo", "请求结果11:" + msg.obj.toString());
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(msg.obj.toString());
                 Toast.makeText(ScannerActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
