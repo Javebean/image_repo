@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -21,17 +23,17 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         SwipeLayout swipeLayout;
-        TextView textViewPos;
         TextView textViewData;
         TextView deleteTextView;
         TextView topTextView;
+        ImageView favicon;
         public SimpleViewHolder(View itemView) {
             super(itemView);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
-            textViewPos = (TextView) itemView.findViewById(R.id.position);
             textViewData = (TextView) itemView.findViewById(R.id.text_data);
             deleteTextView = (TextView) itemView.findViewById(R.id.deleteTextView);
             topTextView = (TextView) itemView.findViewById(R.id.topTextView);
+            favicon = (ImageView) itemView.findViewById(R.id.favicon);
 
         }
     }
@@ -104,9 +106,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         //因为每一项中都是一个swipelayout,所以每一项都要设置showMode.。不然是他的默认模式
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
        // viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left,viewHolder.swipeLayout.getChildAt(0));
-        viewHolder.textViewPos.setText(item.get_id() + ".");
+       // viewHolder.textViewPos.setText(item.get_id() + ".");
         viewHolder.textViewData.setText(item.getTitle());
 
+        //compile 'com.squareup.picasso:picasso:2.5.2'
+        //compile 'de.hdodenhof:circleimageview:2.1.0'
+        Log.i("favicon333",item.getFavicon()==null?"null":item.getFavicon());
+        Picasso.with(mContext).load(item.getFavicon()).into(viewHolder.favicon);
 
         //滑动监听
         viewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
@@ -222,6 +228,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, shareEntities.size());
                 mItemManger.closeAllItems();
+                cur_state = CLOSE_STATE;
                 Toast.makeText(view.getContext(), "Deleted " + viewHolder.textViewData.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
         });

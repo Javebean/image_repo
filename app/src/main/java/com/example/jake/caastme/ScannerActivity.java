@@ -14,9 +14,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+import static android.R.attr.scheme;
 
 /**
  * Created by jake on 2016/10/3.
@@ -31,6 +35,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     String redirect_url;
 
     DBManager dbManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +47,11 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         redirect_url = handleShare();
 
         //服务器的地址
-        server_url = Constants.getProperty("url",this.getApplicationContext());
-         QrScanner();
-
+        server_url = Constants.getProperty("url", this.getApplicationContext());
+        QrScanner();
     }
 
-    public void QrScanner(){
+    public void QrScanner() {
         mScannerView = new ZXingScannerView(this); // Programmatically initialize the scanner view
         mScannerView.startCamera(); // Start camera
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
@@ -74,34 +78,36 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         // Do something with the result here
 
 
-        if(redirect_url!=null && !redirect_url.isEmpty()){
-                try {
-                    redirect_url = URLEncoder.encode(redirect_url,"UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+        if (redirect_url != null && !redirect_url.isEmpty()) {
+            try {
+                redirect_url = URLEncoder.encode(redirect_url, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+            String code = rawResult.getText();
+            Log.i("caastinfo1", code); // Prints scan results
+            final String url_address = server_url + "redirect?code=" + code + "&redirect_url=" + redirect_url;
+
+            // 开启新的线程
+            new Thread() {
+                public void run() {
+                    try {
+                        // 耗时操作
+                        Log.i("xxxxd", url_address);
+                        String result = NetUtil.getCall(url_address);
+                        Log.i("caastinfo_result", result == null ? "null" : result); // Prints scan results
+                        Message msg = Message.obtain();
+                        msg.obj = result;
+                        mHandler.sendMessage(msg);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
 
-
-                String code =  rawResult.getText();
-                Log.i("caastinfo1", code); // Prints scan results
-                final String url_address = server_url+"redirect?code="+code+"&redirect_url="+redirect_url;
-
-                // 开启新的线程
-                new Thread(){
-                    public void run() {
-                        try {
-                        // 耗时操作
-                            Log.i("xxxxd",url_address);
-                            String result = NetUtil.getCall(url_address);
-                            Log.i("caastinfo_result", result==null?"null":result); // Prints scan results
-                            Message msg = Message.obtain();
-                            msg.obj = result;
-                            mHandler.sendMessage(msg);
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    };
-                }.start();
+                ;
+            }.start();
 
         }
 
@@ -117,44 +123,65 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     }
 
 
-
-    public String handleShare(){
+    public String handleShare() {
         // Get intent, action and MIME type
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
 
         String share_url = null;
-         //判断他是否是分享过来的。不是的话，就是点击item列表过来的
+        //判断他是否是分享过来的。不是的话，就是点击item列表过来的
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
 
                 //得到分享的内容（里面包含网址）
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
 
-                if(sharedText!=null && !sharedText.isEmpty()){
+                if (sharedText != null && !sharedText.isEmpty()) {
                     //得到分享的标题
                     String sharedSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
-                    Log.i("shared_info","分享的标题："+sharedSubject);
+                    Log.i("shared_info", "分享的标题：" + sharedSubject);
 
+                    Log.i("shared_info", "分享的内容：" + sharedText);
                     share_url = sharedText.substring(sharedText.indexOf("http"));
-                    Log.i("shared_info","分享的内容："+sharedText);
+
+                    String favicon = null;
+                    try {
+                        URI uri = new URI(share_url);
+                        String domain = uri.getHost();
+                        //这个是zzd 就是uc浏览器的早知道，
+                        if(domain.indexOf("uc")>=0 || domain.indexOf("zzd")>=0){
+                           //uc_favicon
+                            favicon = Constants.getProperty("uc_favicon",this.getApplicationContext());
+                        }else{
+
+                            domain =  domain.startsWith("www.") ? domain.substring(4) : domain;
+                            String scheme = uri.getScheme();
+                            favicon = scheme+"://"+domain+"/favicon.ico";
+
+                        }
+
+
+
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+
                     ShareEntity shareEntity = new ShareEntity();
-                    shareEntity.setFavicon(null);
-                    shareEntity.setTitle(sharedSubject==null?share_url:sharedSubject);
+                    shareEntity.setFavicon(favicon);
+                    shareEntity.setTitle(sharedSubject == null ? share_url : sharedSubject);
                     shareEntity.setUrl(share_url);
                     dbManager.add(shareEntity);
 
                 }
 
             }
-        }else{
+        } else {
             share_url = intent.getStringExtra("redirect_url"); //if it's a string you stored.
         }
 
         return share_url;
     }
-
 
 
     //工作线程
@@ -164,11 +191,11 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         public void handleMessage(Message msg) {
             // 更新UI
             super.handleMessage(msg);
-            Log.i("caastinfo","请求结果11:" + msg.obj.toString());
+            Log.i("caastinfo", "请求结果11:" + msg.obj.toString());
             JSONObject jsonObject = null;
             try {
-                 jsonObject = new JSONObject(msg.obj.toString());
-                 Toast.makeText(ScannerActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                jsonObject = new JSONObject(msg.obj.toString());
+                Toast.makeText(ScannerActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -177,13 +204,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         }
     }
 
-    MyHandler mHandler = new MyHandler() ;
+    MyHandler mHandler = new MyHandler();
 
 
-
-
-
-    public void goToListActivity(){
+    public void goToListActivity() {
 
     }
 

@@ -40,24 +40,6 @@ public class MainActivity extends AppCompatActivity{
         mRecyclerView.setAdapter(new RecyclerViewAdapter(this, list,dbManager));
 
 
-            new Thread(){
-                @Override
-                public void run() {
-                    super.run();
-                    Document doc = null;
-                    try {
-
-                        //compile 'org.jsoup:jsoup:1.10.1'
-                         doc = Jsoup.connect("https://www.baidu.com/").get();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Log.i("xxxxxxxxxxd",doc==null?"null":doc.toString());
-                }
-            }.start();
-
-
-
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
