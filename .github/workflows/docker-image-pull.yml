@@ -1,0 +1,30 @@
+name: Pull Docker Image and Release to Gitee
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天定时运行一次
+
+jobs:
+  pull-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Pull Docker image
+        run: |
+          docker pull linuxserver/nginx:1.26.3
+
+      - name: Save Docker image to tar
+        run: |
+          docker save linuxserver/nginx:1.26.3 -o linuxserver_nginx.tar
+
+      - name: Upload to Gitee release (via API)
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITEE_ACCESS_TOKEN }}" \
+            -F "file=@image.tar" \
+            -F "tag_name=v1.0" \
+            -F "release_name=Release Name" \
+            "https://gitee.com/api/v5/repos/username/repo/releases?access_token=${{ secrets.GITEE_ACCESS_TOKEN }}"
