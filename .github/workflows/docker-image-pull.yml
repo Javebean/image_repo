@@ -21,6 +21,9 @@ jobs:
         run: |
           docker save linuxserver/nginx:1.26.3 -o linuxserver_nginx.tar
 
+      - name: Compress Docker image
+        run: gzip linuxserver_nginx.tar
+        
       - name: Test create release
         id: create_release
         uses: nicennnnnnnlee/action-gitee-release@v1.0.5
@@ -28,7 +31,7 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN  }}
-          gitee_tag_name: v1.0.1
+          gitee_tag_name: v1.0.3
           gitee_release_name: Test v1.0.0
           gitee_release_body: Release 描述
           gitee_target_commitish: master
@@ -43,7 +46,7 @@ jobs:
           gitee_release_id: ${{ steps.create_release.outputs.release-id }}
           gitee_upload_retry_times:  3
           gitee_files: |
-              linuxserver_nginx.tar
+              linuxserver_nginx.tar.gz
 
 
 
