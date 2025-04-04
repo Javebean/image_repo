@@ -25,7 +25,7 @@ jobs:
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITEE_ACCESS_TOKEN }}" \
-            -F "file=@image.tar" \
+            -F "file=@linuxserver_nginx.tar" \
             -F "tag_name=v1.0" \
             -F "release_name=Release Name" \
             "https://gitee.com/api/v5/repos/gemilk/image_repo/releases?access_token=${{ secrets.GITEE_ACCESS_TOKEN }}"
