@@ -28,7 +28,7 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN  }}
-          gitee_tag_name: v1.0.0
+          gitee_tag_name: v1.0.1
           gitee_release_name: Test v1.0.0
           gitee_release_body: Release 描述
           gitee_target_commitish: master
