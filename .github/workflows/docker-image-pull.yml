@@ -3,6 +3,7 @@ name: Pull Docker Image and Release to Gitee
 on:
   schedule:
     - cron: '0 0 * * *'  # 每天定时运行一次
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   pull-and-release:
