@@ -25,7 +25,7 @@ jobs:
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITEE_ACCESS_TOKEN }}" \
-            -d "tag_name=v1.0" \
+            -d "tag_name=v1.1" \
             -d "name=Release Name" \
             -d "body=This is the release body." \
             -d "target_commitish=master" \
