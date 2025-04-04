@@ -43,7 +43,7 @@ jobs:
           gitee_release_id: ${{ steps.create_release.outputs.release-id }}
           gitee_upload_retry_times:  3
           gitee_files: |
-              @linuxserver_nginx.tar
+              linuxserver_nginx.tar
 
 
 
