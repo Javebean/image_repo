@@ -21,21 +21,28 @@ jobs:
         run: |
           docker save linuxserver/nginx:1.26.3 -o linuxserver_nginx.tar
 
-      - name: Create Gitee Release
+      - name: Create Release and save ID
         run: |
-          curl -X POST \
+          curl -s -X POST \
             -H "Authorization: token ${{ secrets.GITEE_ACCESS_TOKEN }}" \
-            -d "tag_name=v1.1" \
-            -d "name=Release Name" \
-            -d "body=This is the release body." \
+            -d "tag_name=v1.2" \
+            -d "name=nginx-release" \
+            -d "body=Nginx docker image release" \
             -d "target_commitish=master" \
-            "https://gitee.com/api/v5/repos/gemilk/image_repo/releases?access_token=${{ secrets.GITEE_ACCESS_TOKEN }}" || true  # 如果已存在，跳过
+            "https://gitee.com/api/v5/repos/gemilk/image_repo/releases?access_token=${{ secrets.GITEE_ACCESS_TOKEN }}" > release.json || echo "Release may already exist"
 
-      - name: Upload docker image to Gitee release
+      - name: Get release ID
+        id: get_release_id
+        run: |
+          RELEASE_ID=$(jq -r .id release.json)
+          echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
+
+      - name: Upload Docker image to Gitee Release
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITEE_ACCESS_TOKEN }}" \
             -F "attachment=@linuxserver_nginx.tar" \
-            "https://gitee.com/api/v5/repos/gemilk/image_repo/releases/assets?access_token=${{ secrets.GITEE_ACCESS_TOKEN }}&tag_name=v1.0"
+            "https://gitee.com/api/v5/repos/gemilk/image_repo/releases/${{ env.RELEASE_ID }}/attachments?access_token=${{ secrets.GITEE_ACCESS_TOKEN }}"
+
 
 
