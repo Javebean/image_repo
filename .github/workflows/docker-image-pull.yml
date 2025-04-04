@@ -24,6 +24,14 @@ jobs:
       - name: Compress Docker image
         run: gzip linuxserver_nginx.tar
         
+      - name: Get current date for tag
+        id: get_date_tag
+        run: |
+          # 获取当前日期，格式为 YYYYMMDD
+          current_date=$(date +'%Y%m%d')
+          echo "Current date as tag: $current_date"
+          echo "tag_name=$current_date" >> $GITHUB_ENV
+        
       - name: Test create release
         id: create_release
         uses: nicennnnnnnlee/action-gitee-release@v1.0.5
@@ -31,9 +39,9 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN  }}
-          gitee_tag_name: v1.0.3
-          gitee_release_name: Test v1.0.0
-          gitee_release_body: Release 描述
+          gitee_tag_name:  ${{ env.tag_name }}
+          gitee_release_name: ${{ env.tag_name }}
+          gitee_release_body: 已同步
           gitee_target_commitish: master
 
             
