@@ -8,6 +8,11 @@ on:
 jobs:
   pull-and-release:
     runs-on: ubuntu-latest
+    
+    env:
+      GITEE_OWNER: gemilk
+      GITEE_REPO: image_repo
+      GITEE_RELEASE_TAG: docker-images
 
     steps:
       - name: Checkout code
@@ -31,7 +36,6 @@ jobs:
           docker save linuxserver/qbittorrent:latest -o qbittorrent_latest.tar
           docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6.tar
 
-
       - name: Compress Docker images
         run: |
           gzip nginx_latest.tar
@@ -40,60 +44,43 @@ jobs:
           gzip tailscale_stable.tar
           gzip qbittorrent_latest.tar
           gzip filebrowser_v2_s6.tar
-        
-
 
       - name: Delete Release from Gitee
         run: |
-          GITEE_TOKEN="${{ secrets.GITEE_ACCESS_TOKEN }}"  # Gitee Token 需要保存在 GitHub Secrets 中
-          GITEE_OWNER="gemilk"  # 替换为你的 Gitee 用户名
-          GITEE_REPO="image_repo"  # 替换为你的 Gitee 仓库名
-          RELEASE_TAG="20250405_test2"  # 替换为你要删除的 Release 标签
-
           # 获取 Release ID
           RELEASE_ID=$(curl -s \
-            -H "Authorization: token $GITEE_TOKEN" \
-            "https://gitee.com/api/v5/repos/$GITEE_OWNER/$GITEE_REPO/releases/tags/$RELEASE_TAG" \
+            -H "Authorization: token ${{secrets.GITEE_ACCESS_TOKEN}}" \
+            "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/tags/${{GITEE_RELEASE_TAG}}" \
             | jq -r '.id')
 
           if [ "$RELEASE_ID" != "null" ]; then
             echo "Release found with ID: $RELEASE_ID"
-            
             # 删除 Release
             curl -X DELETE \
-              -H "Authorization: token $GITEE_TOKEN" \
-              "https://gitee.com/api/v5/repos/$GITEE_OWNER/$GITEE_REPO/releases/$RELEASE_ID"
+              -H "Authorization: token ${{secrets.GITEE_ACCESS_TOKEN}}" \
+              "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/$RELEASE_ID"
             echo "Release deleted successfully."
           else
             echo "Release not found."
           fi
-      
-      - name: Get current date for tag
-        id: get_date_tag
-        run: |
-          # 获取当前日期，格式为 YYYYMMDD
-          current_date=$(date +'%Y%m%d')
-          echo "Current date as tag: $current_date"
-          echo "tag_name=$current_date" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
         uses: nicennnnnnnlee/action-gitee-release@v1.0.5
         with:
-          gitee_owner: gemilk
-          gitee_repo: image_repo
-          gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN  }}
-          gitee_tag_name: ${{ env.tag_name }}_test2
-          gitee_release_name: ${{ env.tag_name }}
+          gitee_owner: ${{ env.GITEE_OWNER }}
+          gitee_repo: ${{ env.GITEE_REPO }}
+          gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN }}
+          gitee_tag_name: ${{ env.GITEE_RELEASE_TAG }}
+          gitee_release_name: ${{ env.GITEE_RELEASE_TAG }}
           gitee_release_body: 常用docker images
           gitee_target_commitish: master
 
-            
       - name: Upload files to exist release
         uses: nicennnnnnnlee/action-gitee-release@v1.0.5
         with:
-          gitee_owner: gemilk
-          gitee_repo: image_repo
+          gitee_owner: ${{ env.GITEE_OWNER }}
+          gitee_repo: ${{ env.GITEE_REPO }}
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN }}
           gitee_release_id: ${{ steps.create_release.outputs.release-id }}
           gitee_upload_retry_times:  3
