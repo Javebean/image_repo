@@ -46,7 +46,7 @@ jobs:
           docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6.tar
           # fb arm64
           docker pull --platform arm64 filebrowser/filebrowser:v2-s6
-          ocker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6_arm64.tar
+          docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6_arm64.tar
 
       - name: Compress Docker images
         run: |
