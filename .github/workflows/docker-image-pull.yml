@@ -41,13 +41,7 @@ jobs:
           gzip qbittorrent_latest.tar
           gzip filebrowser_v2_s6.tar
         
-      - name: Get current date for tag
-        id: get_date_tag
-        run: |
-          # 获取当前日期，格式为 YYYYMMDD
-          current_date=$(date +'%Y%m%d')
-          echo "Current date as tag: $current_date"
-          echo "tag_name=$current_date" >> $GITHUB_ENV
+
 
       - name: Delete Release from Gitee
         run: |
@@ -74,6 +68,13 @@ jobs:
             echo "Release not found."
           fi
       
+      - name: Get current date for tag
+        id: get_date_tag
+        run: |
+          # 获取当前日期，格式为 YYYYMMDD
+          current_date=$(date +'%Y%m%d')
+          echo "Current date as tag: $current_date"
+          echo "tag_name=$current_date" >> $GITHUB_ENV
       - name: Create release
         if: env.release_exists == 'false'
         id: create_release
