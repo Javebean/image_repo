@@ -47,7 +47,7 @@ jobs:
 
       - name: Delete Release from Gitee
         run: |
-          # 获取 Release ID
+          # 获取 Release ID 参考：https://gitee.com/api/v5/doc_json
           RELEASE_ID=$(curl -s \
             -H "Authorization: token ${{secrets.GITEE_ACCESS_TOKEN}}" \
             "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/tags/${{env.GITEE_RELEASE_TAG}}" \
