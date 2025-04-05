@@ -48,8 +48,34 @@ jobs:
           current_date=$(date +'%Y%m%d')
           echo "Current date as tag: $current_date"
           echo "tag_name=$current_date" >> $GITHUB_ENV
-        
+
+      - name: Delete Release from Gitee
+        run: |
+          GITEE_TOKEN="${{ secrets.GITEE_ACCESS_TOKEN }}"  # Gitee Token 需要保存在 GitHub Secrets 中
+          GITEE_OWNER="gemilk"  # 替换为你的 Gitee 用户名
+          GITEE_REPO="image_repo"  # 替换为你的 Gitee 仓库名
+          RELEASE_TAG="20250405_test2"  # 替换为你要删除的 Release 标签
+
+          # 获取 Release ID
+          RELEASE_ID=$(curl -s \
+            -H "Authorization: token $GITEE_TOKEN" \
+            "https://gitee.com/api/v5/repos/$GITEE_OWNER/$GITEE_REPO/releases/tags/$RELEASE_TAG" \
+            | jq -r '.id')
+
+          if [ "$RELEASE_ID" != "null" ]; then
+            echo "Release found with ID: $RELEASE_ID"
+            
+            # 删除 Release
+            curl -X DELETE \
+              -H "Authorization: token $GITEE_TOKEN" \
+              "https://gitee.com/api/v5/repos/$GITEE_OWNER/$GITEE_REPO/releases/$RELEASE_ID"
+            echo "Release deleted successfully."
+          else
+            echo "Release not found."
+          fi
+      
       - name: Create release
+        if: env.release_exists == 'false'
         id: create_release
         uses: nicennnnnnnlee/action-gitee-release@v1.0.5
         with:
@@ -68,7 +94,7 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN }}
-          gitee_release_id: ${{ steps.create_release.outputs.release-id }}
+          gitee_release_id: 484182
           gitee_upload_retry_times:  3
           gitee_files: |
             nginx_latest.tar.gz
