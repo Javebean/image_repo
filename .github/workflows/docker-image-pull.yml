@@ -75,8 +75,8 @@ jobs:
           current_date=$(date +'%Y%m%d')
           echo "Current date as tag: $current_date"
           echo "tag_name=$current_date" >> $GITHUB_ENV
+
       - name: Create release
-        if: env.release_exists == 'false'
         id: create_release
         uses: nicennnnnnnlee/action-gitee-release@v1.0.5
         with:
