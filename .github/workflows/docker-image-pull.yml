@@ -50,7 +50,7 @@ jobs:
           # 获取 Release ID
           RELEASE_ID=$(curl -s \
             -H "Authorization: token ${{secrets.GITEE_ACCESS_TOKEN}}" \
-            "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/tags/${{GITEE_RELEASE_TAG}}" \
+            "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/tags/${{env.GITEE_RELEASE_TAG}}" \
             | jq -r '.id')
 
           if [ "$RELEASE_ID" != "null" ]; then
