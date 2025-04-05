@@ -26,6 +26,9 @@ jobs:
           docker pull tailscale/tailscale:stable
           docker pull linuxserver/qbittorrent:latest
           docker pull filebrowser/filebrowser:v2-s6
+          docker pull --platform arm64 linuxserver/nginx:latest
+          docker pull --platform arm64 linuxserver/qbittorrent:latest
+          docker pull --platform arm64 filebrowser/filebrowser:v2-s6
 
       - name: Save Docker images to tar files
         run: |
@@ -35,6 +38,9 @@ jobs:
           docker save tailscale/tailscale:stable -o tailscale_stable.tar
           docker save linuxserver/qbittorrent:latest -o qbittorrent_latest.tar
           docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6.tar
+          docker save --platform arm64 linuxserver/nginx:latest -o nginx_latest_arm64.tar
+          docker save --platform arm64 linuxserver/qbittorrent:latest -o qbittorrent_latest_arm64.tar
+          docker save --platform arm64 filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6_arm64.tar
 
       - name: Compress Docker images
         run: |
@@ -44,6 +50,9 @@ jobs:
           gzip tailscale_stable.tar
           gzip qbittorrent_latest.tar
           gzip filebrowser_v2_s6.tar
+          gzip nginx_latest_arm64.tar
+          gzip qbittorrent_latest_arm64.tar
+          gzip filebrowser_v2_s6_arm64.tar
 
       - name: Delete Release from Gitee
         run: |
@@ -91,6 +100,9 @@ jobs:
             tailscale_stable.tar.gz
             qbittorrent_latest.tar.gz
             filebrowser_v2_s6.tar.gz
+            nginx_latest_arm64.tar
+            qbittorrent_latest_arm64.tar
+            filebrowser_v2_s6_arm64.tar
 
 
 
