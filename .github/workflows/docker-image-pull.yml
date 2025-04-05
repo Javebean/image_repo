@@ -56,7 +56,7 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN  }}
-          gitee_tag_name:  ${{ env.tag_name }}_test
+          gitee_tag_name:  ${{ env.tag_name }}_test2
           gitee_release_name: ${{ env.tag_name }}
           gitee_release_body: 常用docker images
           gitee_target_commitish: master
