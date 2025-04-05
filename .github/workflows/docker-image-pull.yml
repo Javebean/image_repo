@@ -20,27 +20,33 @@ jobs:
 
       - name: Pull multiple Docker images
         run: |
-          docker pull linuxserver/nginx:latest
           docker pull shadowofgost/derper:main
           docker pull shadowofgost/derper:ip
           docker pull tailscale/tailscale:stable
-          docker pull linuxserver/qbittorrent:latest
-          docker pull filebrowser/filebrowser:v2-s6
-          docker pull --platform arm64 linuxserver/nginx:latest
-          docker pull --platform arm64 linuxserver/qbittorrent:latest
-          docker pull --platform arm64 filebrowser/filebrowser:v2-s6
-
-      - name: Save Docker images to tar files
-        run: |
-          docker save linuxserver/nginx:latest -o nginx_latest.tar
           docker save shadowofgost/derper:main -o derper_main.tar
           docker save shadowofgost/derper:ip -o derper_ip.tar
           docker save tailscale/tailscale:stable -o tailscale_stable.tar
+          
+          # nginx
+          docker pull linuxserver/nginx:latest
+          docker save linuxserver/nginx:latest -o nginx_latest.tar
+          # nginx arm64
+          docker pull --platform arm64 linuxserver/nginx:latest
+          docker save linuxserver/nginx:latest -o nginx_latest_arm64.tar
+          
+          # qbittorrent
+          docker pull linuxserver/qbittorrent:latest
           docker save linuxserver/qbittorrent:latest -o qbittorrent_latest.tar
+          # qb arm64
+          docker pull --platform arm64 linuxserver/qbittorrent:latest
+          docker save linuxserver/qbittorrent:latest -o qbittorrent_latest_arm64.tar
+          
+          # fb
+          docker pull filebrowser/filebrowser:v2-s6
           docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6.tar
-          docker save --platform arm64 linuxserver/nginx:latest -o nginx_latest_arm64.tar
-          docker save --platform arm64 linuxserver/qbittorrent:latest -o qbittorrent_latest_arm64.tar
-          docker save --platform arm64 filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6_arm64.tar
+          # fb arm64
+          docker pull --platform arm64 filebrowser/filebrowser:v2-s6
+          ocker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6_arm64.tar
 
       - name: Compress Docker images
         run: |
