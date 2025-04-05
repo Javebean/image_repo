@@ -94,7 +94,7 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN }}
-          gitee_release_id: 484182
+          gitee_release_id: ${{ steps.create_release.outputs.release-id }}
           gitee_upload_retry_times:  3
           gitee_files: |
             nginx_latest.tar.gz
