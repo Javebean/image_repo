@@ -13,16 +13,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Pull Docker image
+      - name: Pull multiple Docker images
         run: |
-          docker pull linuxserver/nginx:1.26.3
+          docker pull linuxserver/nginx:latest
+          docker pull shadowofgost/derper:main
+          docker pull shadowofgost/derper:ip
+          docker pull tailscale/tailscale:stable
+          docker pull linuxserver/qbittorrent:latest
+          docker pull filebrowser/filebrowser:v2-s6
 
-      - name: Save Docker image to tar
+      - name: Save Docker images to tar files
         run: |
-          docker save linuxserver/nginx:1.26.3 -o linuxserver_nginx.tar
+          docker save linuxserver/nginx:latest -o nginx_latest.tar
+          docker save shadowofgost/derper:main -o derper_main.tar
+          docker save shadowofgost/derper:ip -o derper_ip.tar
+          docker save tailscale/tailscale:stable -o tailscale_stable.tar
+          docker save linuxserver/qbittorrent:latest -o qbittorrent_latest.tar
+          docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6.tar
+
 
       - name: Compress Docker image
-        run: gzip linuxserver_nginx.tar
+        run: |
+          gzip nginx_latest.tar
+          gzip derper_main.tar
+          gzip derper_ip.tar
+          gzip tailscale_stable.tar
+          gzip qbittorrent_latest.tar
+          gzip filebrowser_v2_s6.tar
         
       - name: Get current date for tag
         id: get_date_tag
@@ -39,9 +56,9 @@ jobs:
           gitee_owner: gemilk
           gitee_repo: image_repo
           gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN  }}
-          gitee_tag_name:  ${{ env.tag_name }}
+          gitee_tag_name:  ${{ env.tag_name }} test
           gitee_release_name: ${{ env.tag_name }}
-          gitee_release_body: 已同步
+          gitee_release_body: 常用docker images
           gitee_target_commitish: master
 
             
@@ -54,7 +71,12 @@ jobs:
           gitee_release_id: ${{ steps.create_release.outputs.release-id }}
           gitee_upload_retry_times:  3
           gitee_files: |
-              linuxserver_nginx.tar.gz
+            nginx_latest.tar.gz
+            derper_main.tar.gz
+            derper_ip.tar.gz
+            tailscale_stable.tar.gz
+            qbittorrent_latest.tar.gz
+            filebrowser_v2_s6.tar.gz
 
 
 
