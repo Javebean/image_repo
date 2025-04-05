@@ -31,8 +31,8 @@ jobs:
           docker pull linuxserver/nginx:latest
           docker save linuxserver/nginx:latest -o nginx_latest.tar
           # nginx arm64
-          #docker pull --platform arm64 linuxserver/nginx:latest
-          #docker save linuxserver/nginx:latest -o nginx_latest_arm64.tar
+          docker pull --platform arm64 linuxserver/nginx:latest
+          docker save linuxserver/nginx:latest -o nginx_latest_arm64.tar
           
           # qbittorrent
           docker pull linuxserver/qbittorrent:latest
@@ -56,7 +56,7 @@ jobs:
           gzip tailscale_stable.tar
           gzip qbittorrent_latest.tar
           gzip filebrowser_v2_s6.tar
-          #gzip nginx_latest_arm64.tar
+          gzip nginx_latest_arm64.tar
           gzip qbittorrent_latest_arm64.tar
           gzip filebrowser_v2_s6_arm64.tar
 
@@ -106,9 +106,9 @@ jobs:
             tailscale_stable.tar.gz
             qbittorrent_latest.tar.gz
             filebrowser_v2_s6.tar.gz
-            #nginx_latest_arm64.tar
-            qbittorrent_latest_arm64.tar
-            filebrowser_v2_s6_arm64.tar
+            nginx_latest_arm64.tar.gz
+            qbittorrent_latest_arm64.tar.gz
+            filebrowser_v2_s6_arm64.tar.gz
 
 
 
