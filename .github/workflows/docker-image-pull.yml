@@ -34,7 +34,7 @@ jobs:
       # Clone Gitee repository
       - name: Clone Gitee repository
         run: |
-          git clone git@gitee.com:gemilk/image_repo.git
+          git clone https://gitee.com/gemilk/image_repo.git
           cd image_repo
 
       # Copy files from GitHub repository to Gitee repository
