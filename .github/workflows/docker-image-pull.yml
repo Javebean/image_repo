@@ -113,7 +113,36 @@ jobs:
             nginx_latest_arm64.tar.gz
             qbittorrent_latest_arm64.tar.gz
             filebrowser_v2_s6_arm64.tar.gz
-            hacn_stable.tar.gz
 
+      # Setup Git to push to Gitee
+      - name: Set up Git
+        run: |
+          git config --global user.name "gitaction"
+          git config --global user.email "me.mail@qq.com"
+
+      # Clone Gitee repository
+      - name: Clone Gitee repository
+        run: |
+          git clone git@gitee.com:gemilk/image_repo.git
+          cd image_repo
+
+      # Copy files from GitHub repository to Gitee repository
+      - name: Copy files
+        run: |
+          cp -r ../hacn_stable.tar.gz ./
+
+      # Add and commit changes to Gitee repository
+      - name: Commit and push changes to Gitee
+        run: |
+          git add .
+          git commit -m "docker_hacn_stable - Automated commit from GitHub Actions"
+          git push origin main
+
+      # Set up SSH keys or use a Gitee personal access token (PAT)
+      - name: Set up authentication
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}  # 从 GitHub Secrets 获取 Gitee Token
+        run: |
+          git remote set-url origin https://oauth2:${GITEE_TOKEN}@gitee.com/${GITEE_OWNER}/${GITEE_REPO}.git
 
 
