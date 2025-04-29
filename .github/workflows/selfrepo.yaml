@@ -1,1 +1,147 @@
 
+name: Pull Docker Image and Release to Gitee
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 每周一 00:00 UTC
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  pull-and-release:
+    runs-on: ubuntu-latest
+    
+    env:
+      GITEE_OWNER: gemilk
+      GITEE_REPO: image_repo
+      GITEE_RELEASE_TAG: docker-images
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      
+
+      - name: Pull multiple Docker images
+        run: |
+          docker pull shadowofgost/derper:main
+          docker pull shadowofgost/derper:ip
+          docker pull tailscale/tailscale:stable
+          docker save shadowofgost/derper:main -o derper_main.tar
+          docker save shadowofgost/derper:ip -o derper_ip.tar
+          docker save tailscale/tailscale:stable -o tailscale_stable.tar
+          
+          # nginx
+          docker pull linuxserver/nginx:latest
+          docker save linuxserver/nginx:latest -o nginx_latest.tar
+          # nginx arm64
+          docker pull --platform arm64 linuxserver/nginx:latest
+          docker save linuxserver/nginx:latest -o nginx_latest_arm64.tar
+          
+          # qbittorrent
+          docker pull linuxserver/qbittorrent:latest
+          docker save linuxserver/qbittorrent:latest -o qbittorrent_latest.tar
+          # qb arm64
+          docker pull --platform arm64 linuxserver/qbittorrent:latest
+          docker save linuxserver/qbittorrent:latest -o qbittorrent_latest_arm64.tar
+          
+          # fb
+          docker pull filebrowser/filebrowser:v2-s6
+          docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6.tar
+          # fb arm64
+          docker pull --platform arm64 filebrowser/filebrowser:v2-s6
+          docker save filebrowser/filebrowser:v2-s6 -o filebrowser_v2_s6_arm64.tar
+
+          docker pull hacn/hacn:stable
+          docker save hacn/hacn:stable -o hacn_stable.tar
+
+      - name: Compress Docker images
+        run: |
+          gzip nginx_latest.tar
+          gzip derper_main.tar
+          gzip derper_ip.tar
+          gzip tailscale_stable.tar
+          gzip qbittorrent_latest.tar
+          gzip filebrowser_v2_s6.tar
+          gzip nginx_latest_arm64.tar
+          gzip qbittorrent_latest_arm64.tar
+          gzip filebrowser_v2_s6_arm64.tar
+          gzip hacn_stable.tar
+
+      - name: Delete Release from Gitee
+        run: |
+          # 获取 Release ID 参考：https://gitee.com/api/v5/doc_json
+          RELEASE_ID=$(curl -s \
+            -H "Authorization: token ${{secrets.GITEE_ACCESS_TOKEN}}" \
+            "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/tags/${{env.GITEE_RELEASE_TAG}}" \
+            | jq -r '.id')
+
+          if [ "$RELEASE_ID" != "null" ]; then
+            echo "Release found with ID: $RELEASE_ID"
+            # 删除 Release
+            curl -X DELETE \
+              -H "Authorization: token ${{secrets.GITEE_ACCESS_TOKEN}}" \
+              "https://gitee.com/api/v5/repos/${{env.GITEE_OWNER}}/${{env.GITEE_REPO}}/releases/$RELEASE_ID"
+            echo "Release deleted successfully."
+          else
+            echo "Release not found."
+          fi
+
+      - name: Create release
+        id: create_release
+        uses: nicennnnnnnlee/action-gitee-release@v1.0.5
+        with:
+          gitee_owner: ${{ env.GITEE_OWNER }}
+          gitee_repo: ${{ env.GITEE_REPO }}
+          gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN }}
+          gitee_tag_name: ${{ env.GITEE_RELEASE_TAG }}
+          gitee_release_name: ${{ env.GITEE_RELEASE_TAG }}
+          gitee_release_body: 常用docker images
+          gitee_target_commitish: master
+
+      - name: Upload files to exist release
+        uses: nicennnnnnnlee/action-gitee-release@v1.0.5
+        with:
+          gitee_owner: ${{ env.GITEE_OWNER }}
+          gitee_repo: ${{ env.GITEE_REPO }}
+          gitee_token: ${{ secrets.GITEE_ACCESS_TOKEN }}
+          gitee_release_id: ${{ steps.create_release.outputs.release-id }}
+          gitee_upload_retry_times:  3
+          gitee_files: |
+            nginx_latest.tar.gz
+            derper_main.tar.gz
+            derper_ip.tar.gz
+            tailscale_stable.tar.gz
+            qbittorrent_latest.tar.gz
+            filebrowser_v2_s6.tar.gz
+            nginx_latest_arm64.tar.gz
+            qbittorrent_latest_arm64.tar.gz
+            filebrowser_v2_s6_arm64.tar.gz
+      
+      # Set up SSH keys or use a Gitee personal access token (PAT)
+      - name: Set up authentication
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_ACCESS_TOKEN }}  # 从 GitHub Secrets 获取 Gitee Token
+        run: |
+          git remote set-url origin https://oauth2:${GITEE_ACCESS_TOKEN}@gitee.com/${GITEE_OWNER}/${GITEE_REPO}.git
+
+      # Setup Git to push to Gitee
+      - name: Set up Git
+        run: |
+          git config --global user.name "gitaction"
+          git config --global user.email "me.mail@qq.com"
+
+      # Clone Gitee repository
+      - name: Clone Gitee repository
+        run: |
+          git clone https://gitee.com/gemilk/image_repo.git
+          cd image_repo
+          cp ../hacn_stable.tar.gz ./
+          git add .
+          git commit -m "docker_hacn_stable - Automated commit from GitHub Actions"
+          git push origin main
+
+
+      
+
+      
+
