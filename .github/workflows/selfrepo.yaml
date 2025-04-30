@@ -41,10 +41,30 @@ jobs:
           # 登录Docker registry
           docker login --username="${{ secrets.ALIYUN_REPO_USER }}" "${{ secrets.ALIYUN_REPO_DOMAIN }}" --password="${{ secrets.ALIYUN_REPO_PASS }}"
 
-          # 处理不同镜像
+          # derp
           process_image "shadowofgost/derper:main"
           process_image "shadowofgost/derper:ip"
+          
+          # ts
           process_image "tailscale/tailscale:stable"
+          process_image "tailscale/tailscale:stable" "arm64"
+
+          # nginx
           process_image "linuxserver/nginx:latest"
+          process_image "linuxserver/nginx:latest" "arm64"
+          
+          # qb
           process_image "linuxserver/qbittorrent:latest"
+          process_image "linuxserver/qbittorrent:latest" "arm64"
+
+          # fb
+          process_image "filebrowser/filebrowser:v2-s6"
           process_image "filebrowser/filebrowser:v2-s6" "arm64"
+
+          # ha
+          process_image "linuxserver/homeassistant:latest"
+          process_image "linuxserver/homeassistant:latest" "arm64"
+          
+          # ha china
+          process_image "hacn/hacn:stable"
+          process_image "hacn/hacn:stable" "arm64"
