@@ -31,6 +31,9 @@ jobs:
             docker pull --platform "${platform}" "${image_name}"
             image_id=$(docker images --format "{{.ID}}" --filter "reference=${image_name}")
             modify_name=$(echo "${image_name}" | sed 's/\//-/g')
+            if [[ "$platform" == "arm64" ]]; then
+              modify_name="${modify_name}-arm64"
+            fi
             docker tag "$image_id" "${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}"
             docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}"
           }
