@@ -25,7 +25,7 @@ jobs:
           docker pull shadowofgost/derper:ip
           docker pull tailscale/tailscale:stable
           docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
-          
+          docker images
           image_id=$(docker images --format "{{.ID}}" --filter "reference=shadowofgost/derper:main")
           echo $image_id
           docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/shadowofgost/derper:main
