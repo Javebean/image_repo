@@ -1,5 +1,5 @@
 
-name: Pull Docker Image and Release to Gitee
+name: Self docker images repo
 
 on:
   # schedule:
