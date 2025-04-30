@@ -1,4 +1,3 @@
-
 name: Self docker images repo
 
 on:
@@ -22,20 +21,10 @@ jobs:
           docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
           
           # derp 
-          derp-main="shadowofgost/derper:main"
-          docker pull "${derp-main}"
-          image_id=$(docker images --format "{{.ID}}" --filter "reference=${derp-main}")
+          derp_main="shadowofgost/derper:main"
+          docker pull "${derp_main}"
+          image_id=$(docker images --format "{{.ID}}" --filter "reference=${derp_main}")
 
-          mod=$(echo "${derp-main}" | sed 's/\//-/g')
-          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/$mod
-          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/$mod
-          
-         
-
-      
-
-
-      
-
-      
-
+          mod=$(echo "${derp_main}" | sed 's/\//-/g')
+          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${mod}
+          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${mod}
