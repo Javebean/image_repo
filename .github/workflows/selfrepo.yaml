@@ -23,10 +23,10 @@ jobs:
           
           # derp 
           derp-main="shadowofgost/derper:main"
-          docker pull $derp-main
-          image_id=$(docker images --format "{{.ID}}" --filter "reference=$derp-main")
+          docker pull "${derp-main}"
+          image_id=$(docker images --format "{{.ID}}" --filter "reference=${derp-main}")
 
-          mod=$(echo "$derp-main" | sed 's/\//-/g')
+          mod=$(echo "${derp-main}" | sed 's/\//-/g')
           docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/$mod
           docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/$mod
           
