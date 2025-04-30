@@ -22,15 +22,13 @@ jobs:
       - name: Pull multiple Docker images
         run: |
           docker pull shadowofgost/derper:main
-          docker pull shadowofgost/derper:ip
-          docker pull tailscale/tailscale:stable
           docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
           docker images
           image_id=$(docker images --format "{{.ID}}" --filter "reference=shadowofgost/derper:main")
           echo $image_id
-          docker tag $image_id crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/shadowofgost/derper:main
+          docker tag $image_id crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/shadowofgost:1
           docker images
-          docker push crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/shadowofgost/derper:main
+          docker push crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/shadowofgost:1
           
          
 
