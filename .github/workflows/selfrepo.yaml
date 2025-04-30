@@ -19,16 +19,29 @@ jobs:
       - name: Login to Docker Registry
         run: |
           docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
+      
       - name: Pull multiple Docker images
         run: |  
           process_image() {
             local image_name=$1
-            docker pull "${image_name}"
+            local platform=${2:-"amd64"}  # 设置默认平台为amd64
+            
+            echo "Processing image: ${image_name} with platform: ${platform}"
+            
+            docker pull --platform "${platform}" "${image_name}"
             image_id=$(docker images --format "{{.ID}}" --filter "reference=${image_name}")
             modify_name=$(echo "${image_name}" | sed 's/\//-/g')
-            docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}
-            docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}
+            docker tag "$image_id" "${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}"
+            docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}"
           }
-          # derp 
+
+          # 登录Docker registry
+          docker login --username="${{ secrets.ALIYUN_REPO_USER }}" "${{ secrets.ALIYUN_REPO_DOMAIN }}" --password="${{ secrets.ALIYUN_REPO_PASS }}"
+
+          # 处理不同镜像
           process_image "shadowofgost/derper:main"
           process_image "shadowofgost/derper:ip"
+          process_image "tailscale/tailscale:stable"
+          process_image "linuxserver/nginx:latest"
+          process_image "linuxserver/qbittorrent:latest"
+          process_image "filebrowser/filebrowser:v2-s6" "arm64"
