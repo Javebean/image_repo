@@ -29,7 +29,7 @@ jobs:
           image_id=$(docker images --format "{{.ID}}" --filter "reference=shadowofgost/derper:main")
           echo $image_id
           docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/shadowofgost/derper:main
-          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/shadowofgost/derpeR:main
+          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/shadowofgost/derper:main
           
          
 
