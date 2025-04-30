@@ -12,8 +12,6 @@ jobs:
     
     env:
       NAMESPACE: homesmart
-      GITEE_REPO: image_repo
-      GITEE_RELEASE_TAG: docker-images
 
     steps:
       - name: Checkout code
@@ -21,13 +19,16 @@ jobs:
 
       - name: Pull multiple Docker images
         run: |
-          docker pull shadowofgost/derper:main
           docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
-          image_id=$(docker images --format "{{.ID}}" --filter "reference=shadowofgost/derper:main")
-          echo $image_id
-          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/shadowofgost-derper:main
-          docker images
-          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/shadowofgost-derper:main
+          
+          # derp 
+          derp-main="shadowofgost/derper:main"
+          docker pull $derp-main
+          image_id=$(docker images --format "{{.ID}}" --filter "reference=$derp-main")
+
+          mod=$(echo "$derp-main" | sed 's/\//-/g')
+          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/$mod
+          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/$mod
           
          
 
