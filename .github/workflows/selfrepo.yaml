@@ -21,10 +21,19 @@ jobs:
           docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
           
           # derp 
-          derp_main="shadowofgost/derper:main"
-          docker pull "${derp_main}"
-          image_id=$(docker images --format "{{.ID}}" --filter "reference=${derp_main}")
+          image_name="shadowofgost/derper:main"
+          docker pull "${image_name}"
+          image_id=$(docker images --format "{{.ID}}" --filter "reference=${image_name}")
 
-          mod=$(echo "${derp_main}" | sed 's/\//-/g')
-          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${mod}
-          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${mod}
+          modify_name=$(echo "${image_name}" | sed 's/\//-/g')
+          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}
+          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}
+
+          # derp 
+          image_name="shadowofgost/derper:ip"
+          docker pull "${image_name}"
+          image_id=$(docker images --format "{{.ID}}" --filter "reference=${image_name}")
+
+          modify_name=$(echo "${image_name}" | sed 's/\//-/g')
+          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}
+          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}
