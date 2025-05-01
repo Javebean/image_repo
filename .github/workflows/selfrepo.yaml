@@ -44,11 +44,18 @@ jobs:
           # derp
           process_image "shadowofgost/derper:main"
           process_image "shadowofgost/derper:ip"
+          # hs
+          process_image "headscale/headscale:stable"
+          # hs-ui 
+          process_image "ghcr.io/gurucomputing/headscale-ui:latest"
+          process_image "goodieshq/headscale-admin:latest"
           
           # ts
           process_image "tailscale/tailscale:stable"
           process_image "tailscale/tailscale:stable" "arm64"
 
+
+          
           # nginx
           process_image "linuxserver/nginx:latest"
           process_image "linuxserver/nginx:latest" "arm64"
