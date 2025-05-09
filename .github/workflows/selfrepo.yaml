@@ -75,3 +75,11 @@ jobs:
           # ha china
           process_image "hacn/hacn:stable"
           process_image "hacn/hacn:stable" "arm64"
+          
+          # frpc
+          process_image "snowdreamtech/frpc:latest"
+          process_image "snowdreamtech/frpc:latest" "arm64"
+          
+          # frps
+          process_image "snowdreamtech/frps:latest"
+          process_image "snowdreamtech/frps:latest" "arm64"
