@@ -23,11 +23,11 @@ jobs:
             -u ${{ secrets.ALIYUN_REPO_USER }} \
             --password-stdin \
             registry.cn-hangzhou.aliyuncs.com
-            ls -la
-
+            ls -la ${{ secrets.GITEE_REPO_LOCALSERVE }}/localserve
+            
       # 步骤3：构建并推送 Docker 镜像
       - name: Build and Push Docker Image
-        working-directory: ${{ secrets.GITEE_REPO_LOCALSERVE }}/localserve  # 进入代码目录
+        working-directory: ./${{ secrets.GITEE_REPO_LOCALSERVE }}/localserve  # 进入代码目录
         run: |
           docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug .
           docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug
