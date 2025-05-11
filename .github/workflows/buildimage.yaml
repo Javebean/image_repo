@@ -26,7 +26,7 @@ jobs:
 
       # 步骤3：构建并推送 Docker 镜像
       - name: Build and Push Docker Image
-        working-directory: ./[仓库名称]  # 进入代码目录
+        working-directory: ./${{ secrets.GITEE_REPO_LOCALSERVE }}  # 进入代码目录
         run: |
-          docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:$GITHUB_SHA .
-          docker push registry.cn-hangzhou.aliyuncs.com/homesmart/localserver:$GITHUB_SHA
+          docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug .
+          docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug
