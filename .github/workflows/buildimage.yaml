@@ -29,7 +29,7 @@ jobs:
         working-directory: ./${{ secrets.GITEE_REPO_LOCALSERVE }}/home-projects/localserve  # 进入代码目录
         run: |
           # docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug .
-          #docker build -t localserver:debug .
+          docker build -t localserver:debug .
           
           echo "--------------"
           docker images
