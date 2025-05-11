@@ -28,15 +28,18 @@ jobs:
       - name: Build and Push Docker Image
         working-directory: ./${{ secrets.GITEE_REPO_LOCALSERVE }}/home-projects/localserve  # 进入代码目录
         run: |
-          docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug .
+          # docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug .
+          docker build -t localserver:debug .
+          
           sleep 10
           echo "--------------"
           docker images
           echo "--------------"
 
-          echo ${{ secrets.ALIYUN_REPO_PASS }} | docker login \
-            -u ${{ secrets.ALIYUN_REPO_USER }} \
-            --password-stdin \
-            registry.cn-hangzhou.aliyuncs.com
+          repository="localserver"
+          tag="debug"
+          image_id=$(docker images --format "{{.ID}}" --filter "reference=$repository:$tag")
+          echo $image_id
+          docker tag $image_id ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug
           sleep 5
           docker push ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug
