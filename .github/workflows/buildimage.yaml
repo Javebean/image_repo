@@ -7,7 +7,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     env:
-      ALY_REPO_NAMESPACE: homesmart
+      NAMESPACE: homesmart
     steps:
       # 步骤1：克隆 Gitee 私有仓库
       - name: Clone Gitee Repository
