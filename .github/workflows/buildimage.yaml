@@ -1,9 +1,8 @@
 name: Build and Push to Aliyun
 
 on:
-  push:
-    branches: [ main ]
-
+  workflow_dispatch:  # 允许手动触发
+  
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
