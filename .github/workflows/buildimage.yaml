@@ -9,6 +9,8 @@ jobs:
     env:
       NAMESPACE: homesmart
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       # 步骤1：克隆 Gitee 私有仓库
       - name: Clone Gitee Repository
         run: |
@@ -71,4 +73,34 @@ jobs:
 
           # derp
           #process_image "shadowofgost/derper:main"
-          process_image "shadowofgost/derper:ip"
+          # process_image "shadowofgost/derper:ip"
+      
+      
+      - name: Login to Docker Registry2
+        run: |
+          docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
+      
+      - name: Pull multiple Docker images2
+        run: |  
+          process_image() {
+            local image_name=$1
+            local platform=${2:-"amd64"}  # 设置默认平台为amd64
+            
+            echo "Processing image: ${image_name} with platform: ${platform}"
+            
+            docker pull --platform "${platform}" "${image_name}"
+            image_id=$(docker images --format "{{.ID}}" --filter "reference=${image_name}")
+            modify_name=$(echo "${image_name}" | sed 's/\//-/g')
+            if [[ "$platform" == "arm64" ]]; then
+              modify_name="${modify_name}-arm64"
+            fi
+            docker tag "$image_id" "${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}"
+            docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/${{ env.NAMESPACE }}/${modify_name}"
+          }
+
+          # 登录Docker registry
+          docker login --username="${{ secrets.ALIYUN_REPO_USER }}" "${{ secrets.ALIYUN_REPO_DOMAIN }}" --password="${{ secrets.ALIYUN_REPO_PASS }}"
+
+          # derp
+          process_image "shadowofgost/derper:main"
+          # process_image "shadowofgost/derper:ip"
