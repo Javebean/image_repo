@@ -49,6 +49,10 @@ jobs:
           
           sleep 5
           # docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver-rrr:debug"
+      
+      - name: Login to Docker Registry
+        run: |
+          docker login --username=${{ secrets.ALIYUN_REPO_USER }} ${{ secrets.ALIYUN_REPO_DOMAIN }} --password=${{ secrets.ALIYUN_REPO_PASS }}
       - name: Push Docker Image
         run: |
           #docker push crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/localserver:debug
