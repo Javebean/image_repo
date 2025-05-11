@@ -31,7 +31,9 @@ jobs:
           # docker build -t ${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug .
           docker build -t localserver:debug .
           
-
+          echo "--------------"
+          docker images
+          echo "--------------"
 
           repository="localserver"
           tag="debug"
@@ -39,9 +41,10 @@ jobs:
           echo $image_id
           docker tag "$image_id" "${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug"
 
-          echo "--------------"
+          echo "----22----------"
           docker images
-          echo "--------------"
+          echo "----22----------"
           
           sleep 5
-          docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug"
+          docker push crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/localserver:debug
+          # docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug"
