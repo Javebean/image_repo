@@ -12,7 +12,7 @@ jobs:
       # 步骤1：克隆 Gitee 私有仓库
       - name: Clone Gitee Repository
         run: |
-          git clone https://${{ secrets.GITEE_USERNAME }}:${{ secrets.GITEE_ACCESS_TOKEN }}@gitee.com/${{ secrets.GITEE_USERNAME_REPO }}/${{ secrets.GITEE_LOCALSERVE }}.git
+          git clone https://"${{ secrets.GITEE_USERNAME }}":"${{ secrets.GITEE_ACCESS_TOKEN }}"@gitee.com/"${{ secrets.GITEE_USERNAME_REPO }}"/"${{ secrets.GITEE_LOCALSERVE }}".git
           ls -la ${{ secrets.GITEE_LOCALSERVE }}  # 验证克隆结果
 
       # 步骤2：登录阿里云镜像仓库
