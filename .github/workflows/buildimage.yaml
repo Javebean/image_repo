@@ -46,5 +46,6 @@ jobs:
           echo "----22----------"
           
           sleep 5
-          docker push crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/localserver:debug
           # docker push "${{ secrets.ALIYUN_REPO_DOMAIN }}/homesmart/localserver:debug"
+      - name: Push Docker Image
+          docker push crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/localserver:debug
