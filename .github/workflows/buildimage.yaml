@@ -39,7 +39,7 @@ jobs:
           tag="debug"
           image_id=$(docker images --format "{{.ID}}" --filter "reference=$repository:$tag")
           echo $image_id
-          docker tag "$image_id" "crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/localserver:debug"
+          docker tag "$image_id" crpi-9qpzy3u9htsic0vd.cn-shanghai.personal.cr.aliyuncs.com/homesmart/localserver:debug
 
           echo "----22----------"
           docker images
