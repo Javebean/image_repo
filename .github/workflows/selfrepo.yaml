@@ -41,6 +41,9 @@ jobs:
           # 登录Docker registry
           docker login --username="${{ secrets.ALIYUN_REPO_USER }}" "${{ secrets.ALIYUN_REPO_DOMAIN }}" --password="${{ secrets.ALIYUN_REPO_PASS }}"
 
+          # portainer
+          process_image "portainer/portainer:latest"
+
           # derp
           process_image "shadowofgost/derper:main"
           process_image "shadowofgost/derper:ip"
