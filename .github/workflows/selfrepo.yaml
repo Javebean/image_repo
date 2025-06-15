@@ -41,6 +41,9 @@ jobs:
           # 登录Docker registry
           docker login --username="${{ secrets.ALIYUN_REPO_USER }}" "${{ secrets.ALIYUN_REPO_DOMAIN }}" --password="${{ secrets.ALIYUN_REPO_PASS }}"
 
+          # 
+          process_image "linuxserver/calibre-web:latest"
+          
           # portainer
           process_image "portainer/portainer-ce:latest"
 
