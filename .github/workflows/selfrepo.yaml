@@ -41,14 +41,6 @@ jobs:
           # 登录Docker registry
           docker login --username="${{ secrets.ALIYUN_REPO_USER }}" "${{ secrets.ALIYUN_REPO_DOMAIN }}" --password="${{ secrets.ALIYUN_REPO_PASS }}"
           
-          # baota
-          process_image "btpanel/baota:latest" "arm64"
-          process_image "btpanel/baota:latest"
-          
-          # 
-          process_image "linuxserver/calibre-web:latest"
-          
-          
           # portainer
           process_image "portainer/portainer-ce:latest"
 
@@ -94,3 +86,10 @@ jobs:
           # frps
           process_image "snowdreamtech/frps:latest"
           process_image "snowdreamtech/frps:latest" "arm64"
+
+          # baota
+          process_image "btpanel/baota:latest" "arm64"
+          process_image "btpanel/baota:latest"
+          
+          # 
+          process_image "linuxserver/calibre-web:latest"
