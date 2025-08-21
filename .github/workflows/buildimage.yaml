@@ -1,4 +1,4 @@
-name: Build and Push to Aliyun
+name: Build HOMESERVER and Push to Aliyun
 
 on:
   workflow_dispatch:  # 允许手动触发
