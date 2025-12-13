@@ -57,8 +57,10 @@ jobs:
           process_image "tailscale/tailscale:stable"
           process_image "tailscale/tailscale:stable" "arm64"
 
+          # zerotier
+          process_image "zerotier/zerotier:latest"
+          process_image "zerotier/zerotier:latest" "arm64"
 
-          
           # nginx
           process_image "linuxserver/nginx:latest"
           process_image "linuxserver/nginx:latest" "arm64"
