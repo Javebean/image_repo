@@ -1,4 +1,4 @@
-name: Build HOMESERVER and Push to Aliyun
+name: Build HOMELAB and Push to Aliyun
 
 on:
   workflow_dispatch:  # 允许手动触发
@@ -28,7 +28,7 @@ jobs:
             
       # 步骤3：构建并推送 Docker 镜像
       - name: Build and Push Docker Image
-        working-directory: ./${{ secrets.GITEE_REPO_LOCALSERVE }}/home-projects/homeserve  # 进入后台代码目录
+        working-directory: ./${{ secrets.GITEE_REPO_LOCALSERVE }}/home-projects/homeserv  # 进入后台代码目录
         run: |
           docker buildx version
           docker buildx create --use
